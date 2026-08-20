@@ -377,6 +377,8 @@ textarea.input { resize: vertical; min-height: 80px; }
 .sidebar-user .who { flex: 1; min-width: 0; }
 .sidebar-user .who .name { font-size: var(--fs-sm); font-weight: 600; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .sidebar-user .who .role { font-size: var(--fs-2xs); color: rgba(255,255,255,0.45); }
+.sidebar-user .logout-icon { width: 16px; height: 16px; color: rgba(255,255,255,0.45); flex-shrink: 0; }
+.sidebar-user .logout-icon svg { width: 100%; height: 100%; }
 
 .mobile-sidebar-toggle, .sidebar-close-btn { display: none; }
 
