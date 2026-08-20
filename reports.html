@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reports · Stockpile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/components.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+</head>
+<body>
+
+<div id="page-loader" class="full-page-loader"><div class="spinner lg"></div></div>
+
+<div class="app-shell" id="app-shell" style="display:none;">
+  <div id="sidebar-mount"></div>
+  <div class="main-area">
+    <div id="topbar-mount"></div>
+
+    <main class="page-content fade-in">
+      <div class="page-header">
+        <div>
+          <h1>Reports</h1>
+          <p class="sub">Understand your sales, revenue, and inventory at a glance.</p>
+        </div>
+        <div class="page-header-actions">
+          <button class="btn btn-secondary" id="print-report-btn"><span id="icon-printer"></span> Print report</button>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="sales">Sales Reports</button>
+        <button class="tab-btn" data-tab="inventory">Inventory Report</button>
+      </div>
+
+      <div id="tab-sales" class="fade-in">
+        <div class="toolbar">
+          <select class="input" id="period-select" style="min-width:200px;">
+            <option value="daily">Daily — last 14 days</option>
+            <option value="weekly">Weekly — last 12 weeks</option>
+            <option value="monthly" selected>Monthly — last 12 months</option>
+          </select>
+        </div>
+
+        <div class="stat-grid" id="report-stats" style="margin-bottom:24px;"></div>
+
+        <div class="grid-2">
+          <div class="card chart-card">
+            <div class="card-header"><div><h3>Revenue over time</h3><p class="sub" id="period-sub"></p></div></div>
+            <div class="card-pad"><canvas id="periodChart" height="120"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div><h3>Top-selling products</h3><p class="sub">By revenue, selected range</p></div></div>
+            <div class="card-pad"><canvas id="topRevenueChart" height="120"></canvas></div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:24px;">
+          <div class="card-header"><div><h3>Sales breakdown</h3><p class="sub" id="breakdown-sub"></p></div></div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr><th>Period</th><th>Transactions</th><th>Units Sold</th><th>Revenue</th></tr></thead>
+              <tbody id="breakdown-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-inventory" style="display:none;">
+        <div class="stat-grid" id="inventory-report-stats" style="margin-bottom:24px;"></div>
+        <div class="grid-2">
+          <div class="card chart-card">
+            <div class="card-header"><div><h3>Inventory value by category</h3></div></div>
+            <div class="card-pad"><canvas id="categoryValueChart" height="120"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div><h3>Low & out-of-stock items</h3></div></div>
+            <div id="low-stock-report-list"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script type="module" src="js/pages/reports.js"></script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard · Stockpile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/components.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+</head>
+<body>
+
+<div id="page-loader" class="full-page-loader"><div class="spinner lg"></div></div>
+
+<div class="app-shell" id="app-shell" style="display:none;">
+  <div id="sidebar-mount"></div>
+  <div class="main-area">
+    <div id="topbar-mount"></div>
+
+    <main class="page-content fade-in">
+      <div id="demo-welcome-mount"></div>
+
+      <div class="page-header">
+        <div>
+          <h1 id="greeting">Dashboard</h1>
+          <p class="sub" id="today-date"></p>
+        </div>
+        <div class="page-header-actions">
+          <a href="sales.html" class="btn btn-primary"><span id="icon-cart"></span> New Sale</a>
+          <a href="products.html" class="btn btn-secondary"><span id="icon-plus"></span> Add Product</a>
+        </div>
+      </div>
+
+      <div class="stat-grid" id="stat-grid">
+        <!-- stat cards injected -->
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card chart-card">
+          <div class="card-header">
+            <div><h3>Revenue trend</h3><p class="sub">Last 14 days</p></div>
+          </div>
+          <div class="card-pad"><canvas id="revenueChart" height="110"></canvas></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div><h3>Top-selling products</h3><p class="sub">By units, last 30 days</p></div>
+          </div>
+          <div class="card-pad"><canvas id="topProductsChart" height="110"></canvas></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+          <div class="card-header">
+            <div><h3>Recent activity</h3><p class="sub">Latest stock movements</p></div>
+            <a href="inventory.html" class="btn btn-ghost btn-sm">View all</a>
+          </div>
+          <div id="activity-list"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div><h3>Needs attention</h3><p class="sub">Low & out-of-stock items</p></div>
+            <a href="products.html?filter=low" class="btn btn-ghost btn-sm">View all</a>
+          </div>
+          <div id="attention-list"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script type="module" src="js/pages/dashboard.js"></script>
+</body>
+</html>

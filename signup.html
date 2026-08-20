@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Account · Stockpile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+
+<div id="page-loader" class="full-page-loader"><div class="spinner lg"></div></div>
+
+<div class="auth-shell" id="auth-shell" style="display:none;">
+  <section class="auth-side">
+    <div class="auth-brand"><span class="mark">S</span> Stockpile</div>
+    <div class="auth-pitch">
+      <h1>Set up your store in minutes.</h1>
+      <p>Add products, invite your team, and start tracking stock movements from day one — no spreadsheets required.</p>
+      <div class="auth-gauge-demo">
+        <div class="gauge-demo-row"><span class="g-name">Products tracked</span><strong style="color:#fff;font-family:var(--font-mono);">1,240+</strong></div>
+        <div class="gauge-demo-row"><span class="g-name">Avg. setup time</span><strong style="color:#fff;font-family:var(--font-mono);">6 min</strong></div>
+      </div>
+    </div>
+    <div class="auth-foot">© <span id="year"></span> Stockpile. Built for independent retailers.</div>
+  </section>
+
+  <section class="auth-form-side">
+    <div class="auth-card">
+      <h2>Create your account</h2>
+      <p class="lead">Start managing inventory for your business.</p>
+
+      <div id="auth-alert" class="auth-alert" style="display:none;"></div>
+
+      <form id="signup-form" novalidate>
+        <div class="field">
+          <label for="name">Your name</label>
+          <input class="input" type="text" id="name" placeholder="Jordan Reyes" autocomplete="name" required>
+          <div class="error-msg" id="name-error"></div>
+        </div>
+        <div class="field">
+          <label for="businessName">Business name</label>
+          <input class="input" type="text" id="businessName" placeholder="Reyes General Store" autocomplete="organization" required>
+          <div class="error-msg" id="businessName-error"></div>
+        </div>
+        <div class="field">
+          <label for="email">Email address</label>
+          <input class="input" type="email" id="email" placeholder="you@business.com" autocomplete="email" required>
+          <div class="error-msg" id="email-error"></div>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input class="input" type="password" id="password" placeholder="At least 6 characters" autocomplete="new-password" required>
+          <div class="password-strength"><span></span><span></span><span></span><span></span></div>
+          <div class="error-msg" id="password-error"></div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg btn-block" id="signup-submit" style="margin-top:4px;">
+          <span id="signup-btn-text">Create account</span>
+        </button>
+      </form>
+
+      <p class="auth-form-footer">Already have an account? <a href="login.html">Log in</a></p>
+    </div>
+  </section>
+</div>
+
+<script type="module">
+  import { auth } from "./js/firebase-config.js";
+  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+  import { registerUser, friendlyFirebaseError } from "./js/auth.js";
+  import { validate } from "./js/utils.js";
+  import { Icons } from "./js/icons.js";
+
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      window.location.href = "dashboard.html";
+    } else {
+      document.getElementById("page-loader").style.display = "none";
+      document.getElementById("auth-shell").style.display = "flex";
+    }
+  });
+
+  function showAlert(msg) {
+    const alertEl = document.getElementById("auth-alert");
+    alertEl.innerHTML = `${Icons.svg("alertCircle")}<span>${msg}</span>`;
+    alertEl.style.display = "flex";
+  }
+
+  const pwInput = document.getElementById("password");
+  const bars = document.querySelectorAll(".password-strength span");
+  pwInput.addEventListener("input", () => {
+    const v = pwInput.value;
+    let score = 0;
+    if (v.length >= 6) score++;
+    if (v.length >= 10) score++;
+    if (/[0-9]/.test(v)) score++;
+    if (/[^A-Za-z0-9]/.test(v) || /[A-Z]/.test(v)) score++;
+    const colors = ["var(--color-danger-500)", "var(--color-warning-500)", "var(--color-info-500)", "var(--color-success-500)"];
+    bars.forEach((b, i) => { b.style.background = i < score ? colors[score - 1] : "var(--color-border)"; });
+  });
+
+  document.getElementById("signup-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    document.getElementById("auth-alert").style.display = "none";
+    const name = document.getElementById("name").value.trim();
+    const businessName = document.getElementById("businessName").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = pwInput.value;
+
+    ["name", "businessName", "email", "password"].forEach(id => document.getElementById(id + "-error").textContent = "");
+    let valid = true;
+    if (!validate.required(name)) { document.getElementById("name-error").textContent = "Enter your name."; valid = false; }
+    if (!validate.required(businessName)) { document.getElementById("businessName-error").textContent = "Enter your business name."; valid = false; }
+    if (!validate.email(email)) { document.getElementById("email-error").textContent = "Enter a valid email."; valid = false; }
+    if (!validate.minLength(password, 6)) { document.getElementById("password-error").textContent = "Use at least 6 characters."; valid = false; }
+    if (!valid) return;
+
+    const btn = document.getElementById("signup-submit");
+    btn.disabled = true;
+    document.getElementById("signup-btn-text").innerHTML = `<span class="spinner" style="border-color:rgba(255,255,255,0.4);border-top-color:#fff;"></span>`;
+
+    try {
+      await registerUser({ name, businessName, email, password });
+    } catch (err) {
+      showAlert(friendlyFirebaseError(err));
+      btn.disabled = false;
+      document.getElementById("signup-btn-text").textContent = "Create account";
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log In · Stockpile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+
+<div id="page-loader" class="full-page-loader"><div class="spinner lg"></div></div>
+
+<div class="auth-shell" id="auth-shell" style="display:none;">
+  <section class="auth-side">
+    <div class="auth-brand"><span class="mark">S</span> Stockpile</div>
+    <div class="auth-pitch">
+      <h1>Know exactly what's on your shelves.</h1>
+      <p>Track products, sales, and stock levels in one dashboard built for retail teams who move fast.</p>
+      <div class="auth-gauge-demo">
+        <div class="gauge-demo-row">
+          <span class="g-name">Espresso Beans 1kg</span>
+          <div class="stock-gauge ok"><div class="track"><div class="fill" style="width:82%"></div></div><span class="gauge-label">41</span></div>
+        </div>
+        <div class="gauge-demo-row">
+          <span class="g-name">Oat Milk Carton</span>
+          <div class="stock-gauge low"><div class="track"><div class="fill" style="width:22%"></div></div><span class="gauge-label">4</span></div>
+        </div>
+        <div class="gauge-demo-row">
+          <span class="g-name">Ceramic Mug — Navy</span>
+          <div class="stock-gauge out"><div class="track"><div class="fill" style="width:4%"></div></div><span class="gauge-label">0</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="auth-foot">© <span id="year"></span> Stockpile. Built for independent retailers.</div>
+  </section>
+
+  <section class="auth-form-side">
+    <div class="auth-card">
+      <h2>Welcome back</h2>
+      <p class="lead">Log in to manage your inventory.</p>
+
+      <div id="auth-alert" class="auth-alert" style="display:none;"></div>
+
+      <form id="login-form" novalidate>
+        <div class="field">
+          <label for="email">Email address</label>
+          <div class="input-group">
+            <span class="input-icon" id="icon-mail"></span>
+            <input class="input" type="email" id="email" name="email" placeholder="you@business.com" autocomplete="email" required>
+          </div>
+          <div class="error-msg" id="email-error"></div>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <div class="input-group">
+            <span class="input-icon" id="icon-lock"></span>
+            <input class="input" type="password" id="password" name="password" placeholder="••••••••" autocomplete="current-password" required>
+            <button type="button" class="icon-btn input-suffix-btn" id="toggle-password" aria-label="Show password"></button>
+          </div>
+          <div class="error-msg" id="password-error"></div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin:-8px 0 20px;">
+          <a href="forgot-password.html" class="text-sm" style="color:var(--color-primary-600);font-weight:600;">Forgot password?</a>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg btn-block" id="login-submit">
+          <span id="login-btn-text">Log in</span>
+        </button>
+      </form>
+
+      <div class="auth-divider">or explore instantly</div>
+
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <button type="button" class="btn btn-secondary btn-block" id="demo-admin-btn">
+          <span id="icon-demo-admin"></span> Login as Demo Admin
+        </button>
+        <button type="button" class="btn btn-secondary btn-block" id="demo-user-btn">
+          <span id="icon-demo-user"></span> Login as Demo User
+        </button>
+      </div>
+      <p class="text-xs text-muted" style="text-align:center;margin-top:10px;">No signup needed — instantly explore a live demo store.</p>
+
+      <p class="auth-form-footer">Don't have an account? <a href="signup.html">Create one</a></p>
+    </div>
+  </section>
+</div>
+
+<script type="module">
+  import { auth } from "./js/firebase-config.js";
+  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+  import { loginUser, friendlyFirebaseError } from "./js/auth.js";
+  import { validate } from "./js/utils.js";
+  import { Icons } from "./js/icons.js";
+  import { DEMO_ADMIN_EMAIL, DEMO_USER_EMAIL, DEMO_PASSWORD, markWelcomePending } from "./js/demo.js";
+
+  document.getElementById("year").textContent = new Date().getFullYear();
+  document.getElementById("icon-mail").innerHTML = Icons.svg("mail");
+  document.getElementById("icon-lock").innerHTML = Icons.svg("lock");
+  const toggleBtn = document.getElementById("toggle-password");
+  toggleBtn.innerHTML = Icons.svg("eye");
+
+  document.getElementById("icon-demo-admin").innerHTML = Icons.svg("user");
+  document.getElementById("icon-demo-user").innerHTML = Icons.svg("user");
+
+  async function loginAsDemo(email, btnEl, originalHtml) {
+    document.getElementById("auth-alert").style.display = "none";
+    btnEl.disabled = true;
+    document.getElementById("demo-admin-btn").disabled = true;
+    document.getElementById("demo-user-btn").disabled = true;
+    btnEl.innerHTML = `<span class="spinner"></span>`;
+    try {
+      await loginUser(email, DEMO_PASSWORD);
+      markWelcomePending();
+      // onAuthStateChanged above will redirect to dashboard.html
+    } catch (err) {
+      showAlert(friendlyFirebaseError(err));
+      btnEl.disabled = false;
+      document.getElementById("demo-admin-btn").disabled = false;
+      document.getElementById("demo-user-btn").disabled = false;
+      btnEl.innerHTML = originalHtml;
+    }
+  }
+
+  document.getElementById("demo-admin-btn").addEventListener("click", (e) => {
+    loginAsDemo(DEMO_ADMIN_EMAIL, e.currentTarget, `${Icons.svg("user")} Login as Demo Admin`);
+  });
+  document.getElementById("demo-user-btn").addEventListener("click", (e) => {
+    loginAsDemo(DEMO_USER_EMAIL, e.currentTarget, `${Icons.svg("user")} Login as Demo User`);
+  });
+
+  const pwInput = document.getElementById("password");
+  toggleBtn.addEventListener("click", () => {
+    const show = pwInput.type === "password";
+    pwInput.type = show ? "text" : "password";
+    toggleBtn.innerHTML = Icons.svg(show ? "eyeOff" : "eye");
+  });
+
+  // Redirect immediately if already logged in; otherwise reveal the form.
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      window.location.href = "dashboard.html";
+    } else {
+      document.getElementById("page-loader").style.display = "none";
+      document.getElementById("auth-shell").style.display = "flex";
+    }
+  });
+
+  function showAlert(msg) {
+    const alertEl = document.getElementById("auth-alert");
+    alertEl.innerHTML = `${Icons.svg("alertCircle")}<span>${msg}</span>`;
+    alertEl.style.display = "flex";
+  }
+
+  document.getElementById("login-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    document.getElementById("auth-alert").style.display = "none";
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    let valid = true;
+    document.getElementById("email-error").textContent = "";
+    document.getElementById("password-error").textContent = "";
+    if (!validate.email(email)) { document.getElementById("email-error").textContent = "Enter a valid email."; valid = false; }
+    if (!validate.required(password)) { document.getElementById("password-error").textContent = "Password is required."; valid = false; }
+    if (!valid) return;
+
+    const btn = document.getElementById("login-submit");
+    btn.disabled = true;
+    document.getElementById("login-btn-text").innerHTML = `<span class="spinner" style="border-color:rgba(255,255,255,0.4);border-top-color:#fff;"></span>`;
+
+    try {
+      await loginUser(email, password);
+      // onAuthStateChanged above will redirect to dashboard.html
+    } catch (err) {
+      showAlert(friendlyFirebaseError(err));
+      btn.disabled = false;
+      document.getElementById("login-btn-text").textContent = "Log in";
+    }
+  });
+</script>
+</body>
+</html>

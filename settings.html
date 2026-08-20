@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings · Stockpile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+
+<div id="page-loader" class="full-page-loader"><div class="spinner lg"></div></div>
+
+<div class="app-shell" id="app-shell" style="display:none;">
+  <div id="sidebar-mount"></div>
+  <div class="main-area">
+    <div id="topbar-mount"></div>
+
+    <main class="page-content fade-in">
+      <div class="page-header">
+        <div>
+          <h1>Settings</h1>
+          <p class="sub">Manage your business profile and preferences.</p>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div><h3>Business profile</h3><p class="sub">Shown on receipts and throughout the app</p></div></div>
+          <div class="card-pad">
+            <form id="settings-form">
+              <div class="img-upload" style="margin-bottom:20px;">
+                <div class="preview" id="logo-preview"></div>
+                <div>
+                  <label class="btn btn-secondary btn-sm" for="logo-input" style="cursor:pointer;"><span id="icon-upload"></span> Upload logo</label>
+                  <input type="file" id="logo-input" accept="image/*" style="display:none;">
+                  <p class="text-xs text-muted" style="margin-top:6px;">Square image recommended, up to 5MB.</p>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="business-name">Business name</label>
+                <input class="input" id="business-name" placeholder="e.g. Reyes General Store" required>
+              </div>
+
+              <div class="field-row">
+                <div class="field">
+                  <label for="currency">Currency</label>
+                  <select class="input" id="currency">
+                    <option value="USD">USD — US Dollar ($)</option>
+                    <option value="EUR">EUR — Euro (€)</option>
+                    <option value="GBP">GBP — British Pound (£)</option>
+                    <option value="NGN">NGN — Nigerian Naira (₦)</option>
+                    <option value="KES">KES — Kenyan Shilling (KSh)</option>
+                    <option value="ZAR">ZAR — South African Rand (R)</option>
+                    <option value="INR">INR — Indian Rupee (₹)</option>
+                    <option value="CAD">CAD — Canadian Dollar (CA$)</option>
+                    <option value="AUD">AUD — Australian Dollar (A$)</option>
+                    <option value="JPY">JPY — Japanese Yen (¥)</option>
+                    <option value="GHS">GHS — Ghanaian Cedi (GH₵)</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="tax-percent">Tax rate (%)</label>
+                  <input class="input" id="tax-percent" type="number" min="0" max="100" step="0.1" placeholder="0">
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary" id="save-settings-btn">
+                <span id="save-settings-text"><span id="icon-save"></span> Save changes</span>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div><h3>Account</h3><p class="sub">Your login details</p></div></div>
+          <div class="card-pad">
+            <div class="field">
+              <label>Name</label>
+              <p id="account-name" style="font-weight:600;color:var(--color-ink-900);"></p>
+            </div>
+            <div class="field">
+              <label>Email</label>
+              <p id="account-email" style="font-weight:600;color:var(--color-ink-900);"></p>
+            </div>
+            <button class="btn btn-secondary btn-block" id="logout-settings-btn"><span id="icon-logout"></span> Log out</button>
+          </div>
+        </div>
+
+        <div class="card" id="demo-tools-card" style="display:none; grid-column:1/-1;">
+          <div class="card-header"><div><h3>Demo Tools</h3><p class="sub">Only visible to the Demo Admin account</p></div></div>
+          <div class="card-pad" style="display:flex; flex-direction:column; gap:10px;">
+            <p class="text-sm text-muted">These control the shared demo workspace that both demo accounts see. Use them to refresh the demo before a client walkthrough.</p>
+            <button class="btn btn-secondary btn-block" id="seed-demo-btn"><span id="icon-seed"></span> Seed Demo Data</button>
+            <button class="btn btn-danger btn-block" id="reset-demo-btn"><span id="icon-reset"></span> Reset Demo Data</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script type="module" src="js/pages/settings.js"></script>
+</body>
+</html>

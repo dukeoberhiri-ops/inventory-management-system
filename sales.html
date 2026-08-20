@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sales · Stockpile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+
+<div id="page-loader" class="full-page-loader"><div class="spinner lg"></div></div>
+
+<div class="app-shell" id="app-shell" style="display:none;">
+  <div id="sidebar-mount"></div>
+  <div class="main-area">
+    <div id="topbar-mount"></div>
+
+    <main class="page-content fade-in">
+      <div class="page-header">
+        <div>
+          <h1>Sales</h1>
+          <p class="sub">Record sales and review your transaction history.</p>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="new">New Sale</button>
+        <button class="tab-btn" data-tab="history">Sales History</button>
+      </div>
+
+      <div id="tab-new">
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><div><h3>Add products</h3><p class="sub">Tap a product to add it to the sale</p></div></div>
+            <div class="card-pad" style="padding-bottom:0;">
+              <div class="input-group" style="margin-bottom:16px;">
+                <span class="input-icon" id="icon-search"></span>
+                <input type="text" class="input" id="pos-search" placeholder="Search products by name or SKU…">
+              </div>
+            </div>
+            <div class="grid-cards card-pad" id="pos-grid" style="padding-top:0;max-height:520px;overflow-y:auto;"></div>
+          </div>
+
+          <div class="card" style="align-self:start;position:sticky;top:calc(var(--topbar-h) + 24px);">
+            <div class="card-header"><h3>Current sale</h3></div>
+            <div class="card-pad" style="padding-bottom:8px;">
+              <div id="cart-lines"></div>
+              <div id="cart-empty" style="display:none;"></div>
+            </div>
+            <div class="card-pad" style="border-top:1px solid var(--color-border);">
+              <div class="field">
+                <label for="customer-name">Customer (optional)</label>
+                <input class="input" id="customer-name" placeholder="Walk-in Customer">
+              </div>
+              <div class="field">
+                <label for="payment-method">Payment method</label>
+                <select class="input" id="payment-method">
+                  <option>Cash</option>
+                  <option>Card</option>
+                  <option>Mobile Money</option>
+                  <option>Bank Transfer</option>
+                </select>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:var(--fs-sm);color:var(--color-ink-500);margin-top:12px;">
+                <span>Subtotal</span><span class="mono" id="cart-subtotal">$0.00</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:var(--fs-sm);color:var(--color-ink-500);margin-top:6px;">
+                <span id="cart-tax-label">Tax</span><span class="mono" id="cart-tax">$0.00</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:var(--fs-lg);font-weight:700;margin-top:10px;color:var(--color-ink-900);">
+                <span>Total</span><span class="mono" id="cart-total">$0.00</span>
+              </div>
+              <button class="btn btn-primary btn-lg btn-block" id="complete-sale-btn" style="margin-top:16px;" disabled>
+                <span id="complete-sale-text">Complete Sale</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-history" style="display:none;">
+        <div class="card">
+          <div class="card-pad" style="padding-bottom:0;">
+            <div class="toolbar">
+              <div class="input-group">
+                <span class="input-icon" id="icon-search-2"></span>
+                <input type="text" class="input" id="sales-search" placeholder="Search by receipt no. or customer…">
+              </div>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr><th>Receipt</th><th>Date</th><th>Customer</th><th>Items</th><th>Payment</th><th>Total</th><th></th></tr></thead>
+              <tbody id="sales-tbody"><tr><td colspan="7"><div class="skeleton" style="height:44px;margin:8px 0;"></div></td></tr></tbody>
+            </table>
+          </div>
+          <div id="sales-empty" style="display:none;"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script type="module" src="js/pages/sales.js"></script>
+</body>
+</html>

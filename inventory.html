@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock & Movements · Stockpile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+
+<div id="page-loader" class="full-page-loader"><div class="spinner lg"></div></div>
+
+<div class="app-shell" id="app-shell" style="display:none;">
+  <div id="sidebar-mount"></div>
+  <div class="main-area">
+    <div id="topbar-mount"></div>
+
+    <main class="page-content fade-in">
+      <div class="page-header">
+        <div>
+          <h1>Stock & Movements</h1>
+          <p class="sub">Adjust stock and track every change with a full audit trail.</p>
+        </div>
+      </div>
+
+      <div class="stat-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:24px;" id="inv-stats"></div>
+
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="overview">Stock Overview</button>
+        <button class="tab-btn" data-tab="history">Movement History</button>
+      </div>
+
+      <div id="tab-overview">
+        <div class="card">
+          <div class="card-pad" style="padding-bottom:0;">
+            <div class="toolbar">
+              <div class="input-group">
+                <span class="input-icon" id="icon-search"></span>
+                <input type="text" class="input" id="inv-search" placeholder="Search products…">
+              </div>
+              <select class="input" id="inv-status-filter">
+                <option value="">All stock levels</option>
+                <option value="ok">In Stock</option>
+                <option value="low">Low Stock</option>
+                <option value="out">Out of Stock</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr><th>Product</th><th>SKU</th><th>Current Stock</th><th>Reorder Level</th><th>Status</th><th></th></tr></thead>
+              <tbody id="inv-tbody"><tr><td colspan="6"><div class="skeleton" style="height:44px;margin:8px 0;"></div></td></tr></tbody>
+            </table>
+          </div>
+          <div id="inv-empty" style="display:none;"></div>
+        </div>
+      </div>
+
+      <div id="tab-history" style="display:none;">
+        <div class="card">
+          <div class="card-pad" style="padding-bottom:0;">
+            <div class="toolbar">
+              <select class="input" id="hist-type-filter">
+                <option value="">All movement types</option>
+                <option value="in">Stock In</option>
+                <option value="out">Stock Out</option>
+                <option value="sale">Sale</option>
+                <option value="adjustment">Adjustment</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr><th>Date</th><th>Product</th><th>Type</th><th>Change</th><th>Balance</th><th>Reason</th><th>By</th></tr></thead>
+              <tbody id="hist-tbody"><tr><td colspan="7"><div class="skeleton" style="height:44px;margin:8px 0;"></div></td></tr></tbody>
+            </table>
+          </div>
+          <div id="hist-empty" style="display:none;"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script type="module" src="js/pages/inventory.js"></script>
+</body>
+</html>

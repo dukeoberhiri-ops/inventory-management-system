@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Products · Stockpile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+
+<div id="page-loader" class="full-page-loader"><div class="spinner lg"></div></div>
+
+<div class="app-shell" id="app-shell" style="display:none;">
+  <div id="sidebar-mount"></div>
+  <div class="main-area">
+    <div id="topbar-mount"></div>
+
+    <main class="page-content fade-in">
+      <div class="page-header">
+        <div>
+          <h1>Products</h1>
+          <p class="sub" id="product-count-sub">Loading…</p>
+        </div>
+        <div class="page-header-actions">
+          <button class="btn btn-secondary" id="manage-categories-btn"><span id="icon-tag"></span> Categories</button>
+          <button class="btn btn-primary" id="add-product-btn"><span id="icon-plus"></span> Add Product</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-pad" style="padding-bottom:0;">
+          <div class="toolbar">
+            <div class="input-group">
+              <span class="input-icon" id="icon-search"></span>
+              <input type="text" class="input" id="search-input" placeholder="Search by name or SKU…">
+            </div>
+            <select class="input" id="category-filter"><option value="">All categories</option></select>
+            <select class="input" id="status-filter">
+              <option value="">All stock levels</option>
+              <option value="ok">In Stock</option>
+              <option value="low">Low Stock</option>
+              <option value="out">Out of Stock</option>
+            </select>
+            <select class="input" id="sort-select">
+              <option value="name-asc">Name (A–Z)</option>
+              <option value="name-desc">Name (Z–A)</option>
+              <option value="qty-asc">Stock (Low–High)</option>
+              <option value="qty-desc">Stock (High–Low)</option>
+              <option value="price-asc">Price (Low–High)</option>
+              <option value="price-desc">Price (High–Low)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data-table" id="products-table">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>SKU</th>
+                <th>Category</th>
+                <th>Cost / Sell</th>
+                <th>Stock</th>
+                <th>Supplier</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="products-tbody">
+              <tr><td colspan="7"><div class="skeleton" style="height:44px;margin:8px 0;"></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div id="products-empty" style="display:none;"></div>
+
+        <div class="pagination" id="pagination"></div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script type="module" src="js/pages/products.js"></script>
+</body>
+</html>
