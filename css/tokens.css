@@ -1,0 +1,111 @@
+/* ==========================================================================
+   STOCKPILE — Design Tokens
+   A retail inventory system. The visual language borrows from warehouse
+   ledgers and dispatch manifests: monospace data, coded stock-level bars,
+   and a deep indigo/amber palette that reads as "operations", not "startup".
+   ========================================================================== */
+
+:root {
+  /* ---- Color: Surface ---- */
+  --color-bg: #F5F6F9;
+  --color-bg-subtle: #EDEFF4;
+  --color-surface: #FFFFFF;
+  --color-surface-raised: #FFFFFF;
+  --color-border: #E2E5EC;
+  --color-border-strong: #CBD0DC;
+
+  /* ---- Color: Ink (navy, not pure black) ---- */
+  --color-ink-900: #131A2E;
+  --color-ink-800: #1E2A45;
+  --color-ink-700: #2B3A5C;
+  --color-ink-500: #5C6A87;
+  --color-ink-400: #8590A8;
+  --color-ink-300: #AEB6C8;
+
+  /* ---- Color: Primary (deep indigo — trust / operations) ---- */
+  --color-primary-900: #161C36;
+  --color-primary-700: #232C54;
+  --color-primary-600: #2D3A6B;
+  --color-primary-500: #38477F;
+  --color-primary-100: #E7E9F4;
+
+  /* ---- Color: Accent (dispatch amber — action / attention) ---- */
+  --color-accent-700: #B85E12;
+  --color-accent-600: #DA7A1C;
+  --color-accent-500: #EF9433;
+  --color-accent-100: #FCEBD6;
+
+  /* ---- Color: Signal ---- */
+  --color-success-700: #146C43;
+  --color-success-500: #1E9E63;
+  --color-success-100: #DDF3E7;
+  --color-warning-700: #92620A;
+  --color-warning-500: #D9971C;
+  --color-warning-100: #FBF0D8;
+  --color-danger-700: #A32424;
+  --color-danger-500: #D6403F;
+  --color-danger-100: #FBE1E1;
+  --color-info-700: #1B5A8C;
+  --color-info-500: #2E86C1;
+  --color-info-100: #DEEDF9;
+
+  /* ---- Typography ---- */
+  --font-display: 'Space Grotesk', 'Inter', sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+
+  --fs-2xs: 0.6875rem;
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.8125rem;
+  --fs-base: 0.9375rem;
+  --fs-md: 1.0625rem;
+  --fs-lg: 1.25rem;
+  --fs-xl: 1.625rem;
+  --fs-2xl: 2rem;
+  --fs-3xl: 2.75rem;
+
+  /* ---- Spacing ---- */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+  --sp-16: 64px;
+
+  /* ---- Radius ---- */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 999px;
+
+  /* ---- Shadow ---- */
+  --shadow-sm: 0 1px 2px rgba(19, 26, 46, 0.06);
+  --shadow-md: 0 4px 16px rgba(19, 26, 46, 0.08);
+  --shadow-lg: 0 12px 32px rgba(19, 26, 46, 0.12);
+  --shadow-focus: 0 0 0 3px rgba(45, 58, 107, 0.25);
+
+  /* ---- Layout ---- */
+  --sidebar-w: 264px;
+  --sidebar-w-collapsed: 80px;
+  --topbar-h: 68px;
+
+  /* ---- Motion ---- */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 140ms;
+  --dur-base: 220ms;
+  --dur-slow: 380ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
