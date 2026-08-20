@@ -53,7 +53,7 @@ function sidebarHtml(activePage) {
             <div class="name" id="sidebar-user-name">Loading…</div>
             <div class="role" id="sidebar-user-role">Owner</div>
           </div>
-          ${Icons.svg("logout")}
+          <span class="logout-icon">${Icons.svg("logout")}</span>
         </div>
       </div>
     </aside>
@@ -127,8 +127,14 @@ function applyBusinessBranding(profile, user) {
   const avatarEl = document.getElementById("sidebar-avatar");
   avatarEl.textContent = initials(name);
 
-  if (isDemoUser(user)) {
-    document.getElementById("sidebar-user-role").textContent = isDemoAdmin(user) ? "Demo Admin" : "Demo User (Staff)";
+  // Demo role label is a cosmetic nicety — never let a failure here
+  // (or anywhere else in this function) break the rest of the sidebar.
+  try {
+    if (isDemoUser(user)) {
+      document.getElementById("sidebar-user-role").textContent = isDemoAdmin(user) ? "Demo Admin" : "Demo User (Staff)";
+    }
+  } catch (err) {
+    console.error("Demo role label error (non-fatal):", err);
   }
 
   const logoMark = document.getElementById("sidebar-logo-mark");
