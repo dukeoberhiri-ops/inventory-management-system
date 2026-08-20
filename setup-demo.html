@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo Setup · Stockpile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/components.css">
+</head>
+<body style="background:var(--color-bg);">
+
+<div style="max-width:520px;margin:0 auto;padding:var(--sp-6);">
+  <div class="card card-pad" style="margin-top:var(--sp-8);">
+    <h1 style="font-size:var(--fs-xl);margin-bottom:var(--sp-2);">One-time demo account setup</h1>
+    <p class="text-sm text-muted" style="margin-bottom:var(--sp-6);">
+      This creates the two permanent demo accounts (Demo Admin, Demo User) in Firebase Authentication
+      and their profile documents in Firestore. Safe to tap more than once — if the accounts already
+      exist, it just confirms they work instead of erroring out.
+    </p>
+
+    <button class="btn btn-primary btn-lg btn-block" id="run-setup-btn">Create demo accounts</button>
+
+    <div id="setup-log" style="margin-top:var(--sp-6);display:none;">
+      <div class="card" style="background:var(--color-bg-subtle);border:none;">
+        <div class="card-pad">
+          <div id="log-lines" class="mono text-xs" style="white-space:pre-wrap;line-height:1.8;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="result-box" style="margin-top:var(--sp-6);display:none;">
+      <div class="auth-alert success" style="display:flex;">
+        <span id="icon-check"></span>
+        <div>
+          <strong>Accounts ready.</strong> Next: copy these two UIDs into <code>firebase/firestore.rules</code>,
+          replacing <code>REPLACE_WITH_DEMO_ADMIN_UID</code> and <code>REPLACE_WITH_DEMO_USER_UID</code>,
+          then publish the rules in Firebase Console. After that, log in as Demo Admin and click
+          "Seed Demo Data" in Settings.
+        </div>
+      </div>
+
+      <div class="field" style="margin-top:var(--sp-4);">
+        <label>Demo Admin UID</label>
+        <div class="input-group">
+          <input class="input" id="admin-uid-field" readonly style="padding-left:14px;font-family:var(--font-mono);font-size:var(--fs-xs);">
+          <button class="btn btn-secondary btn-sm input-suffix-btn" data-copy="admin-uid-field">Copy</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Demo User UID</label>
+        <div class="input-group">
+          <input class="input" id="user-uid-field" readonly style="padding-left:14px;font-family:var(--font-mono);font-size:var(--fs-xs);">
+          <button class="btn btn-secondary btn-sm input-suffix-btn" data-copy="user-uid-field">Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="error-box" style="margin-top:var(--sp-6);display:none;">
+      <div class="auth-alert" style="display:flex;">
+        <span id="icon-error"></span>
+        <div id="error-msg"></div>
+      </div>
+    </div>
+
+    <p class="text-xs text-muted" style="margin-top:var(--sp-6);text-align:center;">
+      This page isn't linked from anywhere in the app — bookmark or remember this URL if you need to run it again later.
+    </p>
+  </div>
+</div>
+
+<script type="module">
+  import { setupDemoAccounts } from "./js/setup-demo-accounts.js";
+  import { Icons } from "./js/icons.js";
+
+  document.getElementById("icon-check").innerHTML = Icons.svg("check");
+  document.getElementById("icon-error").innerHTML = Icons.svg("alertCircle");
+
+  const logEl = document.getElementById("log-lines");
+  const logBox = document.getElementById("setup-log");
+  function log(msg) {
+    logBox.style.display = "block";
+    logEl.textContent += msg + "\n";
+  }
+
+  // Mirror console.log into the on-page log too, since dev tools
+  // aren't available on most phones.
+  const originalLog = console.log;
+  console.log = (...args) => {
+    originalLog(...args);
+    log(args.map(a => (typeof a === "string" ? a : JSON.stringify(a))).join(" "));
+  };
+
+  document.getElementById("run-setup-btn").addEventListener("click", async () => {
+    const btn = document.getElementById("run-setup-btn");
+    btn.disabled = true;
+    btn.innerHTML = `<span class="spinner" style="border-color:rgba(255,255,255,0.4);border-top-color:#fff;"></span>`;
+    document.getElementById("error-box").style.display = "none";
+    document.getElementById("result-box").style.display = "none";
+    logEl.textContent = "";
+
+    try {
+      const { adminUid, userUid } = await setupDemoAccounts();
+      document.getElementById("admin-uid-field").value = adminUid;
+      document.getElementById("user-uid-field").value = userUid;
+      document.getElementById("result-box").style.display = "block";
+    } catch (err) {
+      document.getElementById("error-msg").textContent = err.message || String(err);
+      document.getElementById("error-box").style.display = "block";
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Run again";
+    }
+  });
+
+  document.querySelectorAll("[data-copy]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const input = document.getElementById(btn.dataset.copy);
+      try {
+        await navigator.clipboard.writeText(input.value);
+        const original = btn.textContent;
+        btn.textContent = "Copied!";
+        setTimeout(() => { btn.textContent = original; }, 1500);
+      } catch (e) {
+        input.select();
+        document.execCommand("copy");
+      }
+    });
+  });
+</script>
+</body>
+</html>
