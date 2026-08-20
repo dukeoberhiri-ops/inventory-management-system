@@ -13,20 +13,24 @@ const { user } = await (async () => {
 document.getElementById("app-shell").style.display = "flex";
 document.getElementById("page-loader").style.display = "none";
 
-if (isDemoUser(user) && consumeWelcomePending()) {
-  const role = isDemoAdmin(user) ? "Demo Admin" : "Demo User";
-  document.getElementById("demo-welcome-mount").innerHTML = `
-    <div class="demo-banner" id="demo-banner">
-      <div class="demo-icon">${Icons.svg("sparkle")}</div>
-      <div class="demo-body">
-        <div class="demo-title">Welcome to the demo — you're signed in as ${role}<span class="demo-role-badge">Live Demo</span></div>
-        <div class="demo-msg">Feel free to explore all features of the application using this demonstration account. Any changes you make are for testing purposes only and may be reset at any time.</div>
-      </div>
-      <button class="icon-btn demo-close" id="demo-banner-close" aria-label="Dismiss">${Icons.svg("x")}</button>
-    </div>`;
-  document.getElementById("demo-banner-close").addEventListener("click", () => {
-    document.getElementById("demo-banner").remove();
-  });
+try {
+  if (isDemoUser(user) && consumeWelcomePending()) {
+    const role = isDemoAdmin(user) ? "Demo Admin" : "Demo User";
+    document.getElementById("demo-welcome-mount").innerHTML = `
+      <div class="demo-banner" id="demo-banner">
+        <div class="demo-icon">${Icons.svg("sparkle")}</div>
+        <div class="demo-body">
+          <div class="demo-title">Welcome to the demo — you're signed in as ${role}<span class="demo-role-badge">Live Demo</span></div>
+          <div class="demo-msg">Feel free to explore all features of the application using this demonstration account. Any changes you make are for testing purposes only and may be reset at any time.</div>
+        </div>
+        <button class="icon-btn demo-close" id="demo-banner-close" aria-label="Dismiss">${Icons.svg("x")}</button>
+      </div>`;
+    document.getElementById("demo-banner-close").addEventListener("click", () => {
+      document.getElementById("demo-banner").remove();
+    });
+  }
+} catch (err) {
+  console.error("Demo welcome banner error (non-fatal):", err);
 }
 
 document.getElementById("icon-cart").innerHTML = Icons.svg("cart");

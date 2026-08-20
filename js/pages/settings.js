@@ -46,48 +46,53 @@ document.getElementById("logo-input").addEventListener("change", (e) => {
 document.getElementById("logout-settings-btn").addEventListener("click", () => logoutUser());
 
 /* ---------------------------------------------------------------- Demo Tools */
-if (isDemoAdmin(user)) {
-  document.getElementById("demo-tools-card").style.display = "block";
-  document.getElementById("icon-seed").innerHTML = Icons.svg("refresh");
-  document.getElementById("icon-reset").innerHTML = Icons.svg("trash");
+try {
+  if (isDemoAdmin(user)) {
+    document.getElementById("demo-tools-card").style.display = "block";
+    document.getElementById("icon-seed").innerHTML = Icons.svg("refresh");
+    document.getElementById("icon-reset").innerHTML = Icons.svg("trash");
 
-  document.getElementById("seed-demo-btn").addEventListener("click", async () => {
-    const btn = document.getElementById("seed-demo-btn");
-    btn.disabled = true;
-    const original = btn.innerHTML;
-    btn.innerHTML = `<span class="spinner" style="border-color:rgba(255,255,255,0.4);border-top-color:var(--color-primary-600);"></span>`;
-    try {
-      await seedDemoData();
-      toast.success("Demo data seeded", "Fresh products, categories, and sales are now in the demo workspace.");
-    } catch (err) {
-      toast.error("Couldn't seed demo data", err.message);
-    } finally {
-      btn.disabled = false;
-      btn.innerHTML = original;
-    }
-  });
-
-  document.getElementById("reset-demo-btn").addEventListener("click", async () => {
-    const ok = await confirmDialog({
-      title: "Reset demo data?",
-      message: "This clears everything in the shared demo workspace — products, sales, and history for both Demo Admin and Demo User — and reseeds it fresh. This can't be undone.",
-      confirmText: "Reset demo data",
+    document.getElementById("seed-demo-btn").addEventListener("click", async () => {
+      const btn = document.getElementById("seed-demo-btn");
+      btn.disabled = true;
+      const original = btn.innerHTML;
+      btn.innerHTML = `<span class="spinner" style="border-color:rgba(255,255,255,0.4);border-top-color:var(--color-primary-600);"></span>`;
+      try {
+        await seedDemoData();
+        toast.success("Demo data seeded", "Fresh products, categories, and sales are now in the demo workspace.");
+      } catch (err) {
+        toast.error("Couldn't seed demo data", err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = original;
+      }
     });
-    if (!ok) return;
-    const btn = document.getElementById("reset-demo-btn");
-    btn.disabled = true;
-    const original = btn.innerHTML;
-    btn.innerHTML = `<span class="spinner" style="border-color:rgba(255,255,255,0.4);border-top-color:#fff;"></span>`;
-    try {
-      await resetDemoData();
-      toast.success("Demo data reset", "The demo workspace is back to its original state.");
-    } catch (err) {
-      toast.error("Couldn't reset demo data", err.message);
-    } finally {
-      btn.disabled = false;
-      btn.innerHTML = original;
-    }
-  });
+
+    document.getElementById("reset-demo-btn").addEventListener("click", async () => {
+      const ok = await confirmDialog({
+        title: "Reset demo data?",
+        message: "This clears everything in the shared demo workspace — products, sales, and history for both Demo Admin and Demo User — and reseeds it fresh. This can't be undone.",
+        confirmText: "Reset demo data",
+      });
+      if (!ok) return;
+      const btn = document.getElementById("reset-demo-btn");
+      btn.disabled = true;
+      const original = btn.innerHTML;
+      btn.innerHTML = `<span class="spinner" style="border-color:rgba(255,255,255,0.4);border-top-color:#fff;"></span>`;
+      try {
+        await resetDemoData();
+        toast.success("Demo data reset", "The demo workspace is back to its original state.");
+      } catch (err) {
+        toast.error("Couldn't reset demo data", err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = original;
+      }
+    });
+  }
+} catch (err) {
+  // A failure in demo-only tooling must never take down the rest of Settings.
+  console.error("Demo Tools setup error (non-fatal):", err);
 }
 
 document.getElementById("settings-form").addEventListener("submit", async (e) => {
