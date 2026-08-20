@@ -1,0 +1,22 @@
+{
+  "categories": ["Beverages", "Bakery", "Snacks", "Household", "Personal Care"],
+
+  "suppliers": [
+    { "name": "Northgate Distributors", "contact": "orders@northgate.co" },
+    { "name": "Bluecrest Wholesale", "contact": "sales@bluecrest.co" },
+    { "name": "Harbor & Co Supply", "contact": "hello@harborco.com" }
+  ],
+
+  "products": [
+    { "name": "Espresso Beans 1kg", "category": "Beverages", "sku": "BEV-4821-TX9", "costPrice": 9.50, "sellingPrice": 18.00, "quantity": 42, "reorderLevel": 10, "supplier": "Northgate Distributors" },
+    { "name": "Oat Milk Carton 1L", "category": "Beverages", "sku": "BEV-1190-QK2", "costPrice": 1.80, "sellingPrice": 3.75, "quantity": 4, "reorderLevel": 12, "supplier": "Bluecrest Wholesale" },
+    { "name": "Sourdough Loaf", "category": "Bakery", "sku": "BAK-3305-LM7", "costPrice": 2.10, "sellingPrice": 5.50, "quantity": 15, "reorderLevel": 8, "supplier": "Harbor & Co Supply" },
+    { "name": "Butter Croissant", "category": "Bakery", "sku": "BAK-7742-VD1", "costPrice": 0.90, "sellingPrice": 2.75, "quantity": 0, "reorderLevel": 15, "supplier": "Harbor & Co Supply" },
+    { "name": "Sea Salt Kettle Chips", "category": "Snacks", "sku": "SNK-2287-HP3", "costPrice": 1.20, "sellingPrice": 3.25, "quantity": 60, "reorderLevel": 20, "supplier": "Bluecrest Wholesale" },
+    { "name": "Dark Chocolate Almonds", "category": "Snacks", "sku": "SNK-9931-BW8", "costPrice": 2.40, "sellingPrice": 6.00, "quantity": 5, "reorderLevel": 10, "supplier": "Northgate Distributors" },
+    { "name": "Ceramic Mug — Navy", "category": "Household", "sku": "HSH-5510-RT4", "costPrice": 3.60, "sellingPrice": 9.99, "quantity": 22, "reorderLevel": 6, "supplier": "Harbor & Co Supply" },
+    { "name": "Bamboo Cutting Board", "category": "Household", "sku": "HSH-8823-NC6", "costPrice": 6.75, "sellingPrice": 16.50, "quantity": 9, "reorderLevel": 5, "supplier": "Bluecrest Wholesale" },
+    { "name": "Lavender Hand Soap", "category": "Personal Care", "sku": "PCR-6604-ZX2", "costPrice": 1.50, "sellingPrice": 4.25, "quantity": 30, "reorderLevel": 10, "supplier": "Northgate Distributors" },
+    { "name": "Bamboo Toothbrush 2-Pack", "category": "Personal Care", "sku": "PCR-1147-DY9", "costPrice": 1.10, "sellingPrice": 3.50, "quantity": 2, "reorderLevel": 8, "supplier": "Bluecrest Wholesale" }
+  ]
+}

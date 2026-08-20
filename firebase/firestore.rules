@@ -1,0 +1,117 @@
+rules_version = '2';
+
+// ---------------------------------------------------------------------
+// Stockpile — Firestore Security Rules
+//
+// Model: every business document (product, sale, stock movement,
+// category, supplier) carries an `ownerId` field equal to the Firebase
+// Auth UID of the account that owns it. A signed-in user may only read
+// or write documents where ownerId matches their own UID — this keeps
+// each business's inventory fully isolated from every other account.
+//
+// The `users/{uid}` document (business profile / settings) is keyed
+// directly by UID and is readable/writable only by that same user.
+// ---------------------------------------------------------------------
+
+// ---------------------------------------------------------------------
+// Demo accounts: Demo Admin and Demo User share one workspace so they
+// can see each other's data live (a sale rung up by Demo User shows
+// up immediately for Demo Admin, like a real staff/owner pair). Fill
+// in the two UIDs below from Firebase Console > Authentication > Users
+// after creating the demo accounts (see README "Demo accounts" section).
+// This does NOT affect real customer accounts, which remain isolated
+// to their own UID exactly as before.
+// ---------------------------------------------------------------------
+function isDemoUid(uid) {
+  return uid == "REPLACE_WITH_DEMO_ADMIN_UID" || uid == "REPLACE_WITH_DEMO_USER_UID";
+}
+
+function isDemoWorkspace(ownerId) {
+  return ownerId == "demo-workspace-stockpile";
+}
+
+function isSignedIn() {
+  return request.auth != null;
+}
+
+function isOwner(resourceOwnerId) {
+  return isSignedIn() && (
+    request.auth.uid == resourceOwnerId ||
+    (isDemoUid(request.auth.uid) && isDemoWorkspace(resourceOwnerId))
+  );
+}
+
+function ownerIdMatchesCaller() {
+  return isSignedIn() && (
+    request.resource.data.ownerId == request.auth.uid ||
+    (isDemoUid(request.auth.uid) && isDemoWorkspace(request.resource.data.ownerId))
+  );
+}
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---- User / business profile ----
+    match /users/{userId} {
+      allow read, update: if isSignedIn() && request.auth.uid == userId;
+      allow create: if isSignedIn() && request.auth.uid == userId
+                    && request.resource.data.keys().hasAll(['name', 'email', 'businessName']);
+      allow delete: if false; // account deletion handled via support, not client
+    }
+
+    // ---- Products ----
+    match /products/{productId} {
+      allow read: if isOwner(resource.data.ownerId);
+      allow create: if ownerIdMatchesCaller()
+                    && request.resource.data.name is string
+                    && request.resource.data.name.size() > 0
+                    && request.resource.data.sku is string
+                    && request.resource.data.costPrice is number
+                    && request.resource.data.sellingPrice is number
+                    && request.resource.data.quantity is number
+                    && request.resource.data.quantity >= 0;
+      allow update: if isOwner(resource.data.ownerId)
+                    && request.resource.data.ownerId == resource.data.ownerId;
+      allow delete: if isOwner(resource.data.ownerId);
+    }
+
+    // ---- Stock movement history (append-only audit trail) ----
+    match /stockMovements/{movementId} {
+      allow read: if isOwner(resource.data.ownerId);
+      allow create: if ownerIdMatchesCaller();
+      allow update, delete: if false; // immutable audit log
+    }
+
+    // ---- Sales ----
+    match /sales/{saleId} {
+      allow read: if isOwner(resource.data.ownerId);
+      allow create: if ownerIdMatchesCaller()
+                    && request.resource.data.items is list
+                    && request.resource.data.items.size() > 0
+                    && request.resource.data.total is number
+                    && request.resource.data.total >= 0;
+      allow update, delete: if false; // sales records are immutable once made
+    }
+
+    // ---- Categories ----
+    match /categories/{categoryId} {
+      allow read: if isOwner(resource.data.ownerId);
+      allow create: if ownerIdMatchesCaller() && request.resource.data.name is string;
+      allow update: if isOwner(resource.data.ownerId);
+      allow delete: if isOwner(resource.data.ownerId);
+    }
+
+    // ---- Suppliers ----
+    match /suppliers/{supplierId} {
+      allow read: if isOwner(resource.data.ownerId);
+      allow create: if ownerIdMatchesCaller() && request.resource.data.name is string;
+      allow update: if isOwner(resource.data.ownerId);
+      allow delete: if isOwner(resource.data.ownerId);
+    }
+
+    // Deny everything else by default.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
